@@ -29,6 +29,23 @@ window.addEventListener("load", () => {
 
 
 // ----------------------
+// Safari音声解除
+// ----------------------
+document.body.addEventListener("click", () => {
+
+    alarm.currentTime = 0;
+
+    alarm.play().then(() => {
+
+        alarm.pause();
+        alarm.currentTime = 0;
+
+    }).catch(() => {});
+
+}, { once: true });
+
+
+// ----------------------
 // 設定保存
 // ----------------------
 document.querySelector("form").addEventListener("submit", () => {
@@ -94,7 +111,12 @@ async function checkAlarm() {
 
             alarmScreen.style.display = "flex";
 
-            alarm.play().catch(() => {});
+            alarm.pause();
+            alarm.currentTime = 0;
+
+            alarm.play().catch(err => {
+                console.log("Alarm play failed:", err);
+            });
 
         }
 
@@ -223,6 +245,16 @@ function acknowledge() {
 // テスト通知
 // ----------------------
 function testAlarm() {
+
+    // Safari用に一度再生して音声を有効化
+    alarm.currentTime = 0;
+
+    alarm.play().then(() => {
+
+        alarm.pause();
+        alarm.currentTime = 0;
+
+    }).catch(() => {});
 
     fetch("/test", {
         method: "POST"
