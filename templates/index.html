@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TOYOTYO ALERT Ver0.8</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1>🚇 TOYOTYO ALERT Ver0.8</h1>
+
+    <form action="/start" method="post">
+
+        <h2>監視設定</h2>
+
+        <label>駅</label>
+
+        <select name="station">
+
+            <option>中野</option>
+            <option>落合</option>
+            <option>高田馬場</option>
+            <option>早稲田</option>
+            <option>神楽坂</option>
+            <option>飯田橋</option>
+            <option>九段下</option>
+            <option>竹橋</option>
+            <option>大手町</option>
+            <option>日本橋</option>
+            <option>茅場町</option>
+            <option selected>木場</option>
+            <option>東陽町</option>
+            <option>南砂町</option>
+            <option>西葛西</option>
+            <option>葛西</option>
+            <option>浦安</option>
+            <option>南行徳</option>
+            <option>行徳</option>
+            <option>妙典</option>
+            <option>原木中山</option>
+            <option>西船橋</option>
+
+        </select>
+
+        <label>行先</label>
+
+        <select name="destination">
+
+            <option>中野</option>
+            <option>東陽町</option>
+            <option selected>西船橋</option>
+
+        </select>
+
+        <label>列番</label>
+
+        <input
+            type="text"
+            name="train"
+            placeholder="例：A1234S">
+
+        <br><br>
+
+        <button type="submit">
+            ▶ 監視開始
+        </button>
+
+        <button
+            type="button"
+            onclick="location.href='/stop'">
+
+            ■ 停止
+
+        </button>
+
+        <button
+            type="button"
+            onclick="testAlarm()">
+
+            🔔 テスト
+
+        </button>
+
+    </form>
+
+    <hr>
+
+    <h2>📡 現在の監視状態</h2>
+
+    <div class="statusIndicator">
+
+        <div id="statusLamp" class="lamp offline"></div>
+
+        <span id="statusText">
+
+            停止中
+
+        </span>
+
+    </div>
+
+    <table>
+
+        <tr>
+            <th>状態</th>
+            <td id="monitorState">停止中</td>
+        </tr>
+
+        <tr>
+            <th>駅</th>
+            <td id="monitorStation">-</td>
+        </tr>
+
+        <tr>
+            <th>行先</th>
+            <td id="monitorDestination">-</td>
+        </tr>
+
+        <tr>
+            <th>列番</th>
+            <td id="monitorTrain">-</td>
+        </tr>
+
+        <tr>
+            <th>最終検知</th>
+            <td id="lastDetect">-</td>
+        </tr>
+
+    </table>
+
+    <hr>
+
+        <h2>📊 統計</h2>
+
+    <table>
+
+        <tr>
+            <th>今日の通知</th>
+            <td id="todayCount">0</td>
+        </tr>
+
+        <tr>
+            <th>累計通知</th>
+            <td id="totalCount">0</td>
+        </tr>
+
+    </table>
+
+    <hr>
+
+    <h2>📜 通知履歴</h2>
+
+    <table>
+
+        <thead>
+
+            <tr>
+
+                <th>時間</th>
+                <th>駅</th>
+                <th>行先</th>
+                <th>列番</th>
+
+            </tr>
+
+        </thead>
+
+        <tbody id="historyBody">
+
+        </tbody>
+
+    </table>
+
+</div>
+
+
+<!-- アラーム画面 -->
+<div id="alarmScreen" class="alarmScreen">
+
+    <div class="alarmBox">
+
+        <h1>🚨 接近検知 🚨</h1>
+
+        <h2 id="stationText"></h2>
+
+        <h2 id="trainText"></h2>
+
+        <button onclick="acknowledge()">
+
+            確認
+
+        </button>
+
+    </div>
+
+</div>
+
+
+<!-- アラーム音 -->
+<audio
+    id="alarm"
+    loop>
+
+    <source
+        src="{{ url_for('static', filename='alarm.mp3') }}"
+        type="audio/mpeg">
+
+</audio>
+
+
+<script src="{{ url_for('static', filename='script.js') }}"></script>
+
+</body>
+
+</html>
