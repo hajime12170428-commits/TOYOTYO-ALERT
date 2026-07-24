@@ -277,3 +277,43 @@ checkAlarm();
 loadHistory();
 loadStats();
 updateLastDetect();
+// ----------------------
+// 監視停止
+// ----------------------
+async function stopMonitor() {
+
+    try {
+
+        const res = await fetch("/stop", {
+            method: "POST"
+        });
+
+        if (!res.ok) {
+            alert("停止に失敗しました");
+            return;
+        }
+
+        alarm.pause();
+        alarm.currentTime = 0;
+
+        alarmPlaying = false;
+
+        alarmScreen.style.display = "none";
+
+        document.getElementById("statusLamp").className = "lamp offline";
+        document.getElementById("statusText").innerHTML = "停止中";
+
+        document.getElementById("monitorState").innerHTML = "停止中";
+        document.getElementById("monitorStation").innerHTML = "-";
+        document.getElementById("monitorDestination").innerHTML = "-";
+        document.getElementById("monitorTrain").innerHTML = "-";
+
+    } catch (e) {
+
+        console.log(e);
+
+        alert("停止できませんでした");
+
+    }
+
+}
