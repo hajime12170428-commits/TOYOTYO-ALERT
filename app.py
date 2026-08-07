@@ -140,6 +140,13 @@ def index():
     return render_template("index.html")
 
 
+@app.route("/api/health")
+@app.route("/healthz")
+def health():
+    """死活監視用(Renderのヘルスチェック)。"""
+    return jsonify({"status": "ok", "lines": len(LINES)})
+
+
 @app.route("/lines")
 def get_lines():
     return jsonify(LINES)

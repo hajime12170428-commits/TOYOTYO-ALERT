@@ -21,7 +21,7 @@
 
 ```
 python -m venv .venv
-.venv\Scripts\pip install -r requirements.txt
+.venv\Scripts\pip install -r requirements-dev.txt
 ```
 
 起動(どちらでも):
@@ -37,11 +37,16 @@ python -m venv .venv
 .venv\Scripts\python.exe -m pytest tests/
 ```
 
-## 公開(Render等)する場合
+(テストの実行には `requirements-dev.txt` の pytest が必要です)
 
-- Start Command: `gunicorn --workers 1 --threads 8 app:app`
-  (監視状態はプロセス内メモリのため **workers は必ず 1**)
-- SQLite(`data/toyotyo.db`)は再デプロイで消える環境があるため、履歴を永続させる場合は Persistent Disk を `data/` にマウントしてください
+## 公開(Render)
+
+リポジトリ同梱の [render.yaml](render.yaml) の設定でデプロイできます(Docker で動かす場合は [Dockerfile](Dockerfile) を使用)。
+
+- Start Command: `gunicorn --workers 1 --threads 8 --timeout 120 --bind 0.0.0.0:$PORT app:app`
+  (監視状態はプロセス内メモリのため **workers は必ず 1**。並行処理は threads 側で行う)
+- ヘルスチェック: `/api/health`
+- 永続ディスクを `/data` にマウントし、環境変数 `DATA_DIR=/data` を設定すると履歴・監視状態が再デプロイ後も残ります(未設定ならリポジトリ内 `data/`)
 - タイムスタンプはコード側でJST固定のため `TZ` の設定は不要です
 
 ## 路線・行先の追加
@@ -66,6 +71,7 @@ python -m venv .venv
 | 変数 | 既定値 | 説明 |
 |---|---|---|
 | `PORT` | 5000 | 待受ポート |
+| `DATA_DIR` | `./data` | SQLiteの保存先(Renderでは `/data`) |
 | `FLASK_DEBUG` | 0 | 1で開発モード |
 | `MAX_MONITORS` | 50 | 全体の同時監視数上限 |
 | `MAX_MONITOR_HOURS` | 12 | 連続監視の上限(超過で自動終了) |

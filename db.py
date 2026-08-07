@@ -12,9 +12,12 @@ import threading
 from timeutil import now_str, today_str
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
+# 保存先は DATA_DIR で変更できる(Renderの永続ディスク /data など)。
 # ファイル名は旧サービス名(TOYOCHO ALERT)由来だが、変更すると既存データが
 # 読めなくなるため互換性のために維持している
-DB_PATH = os.path.join(BASE_DIR, "data", "toyotyo.db")
+DATA_DIR = os.environ.get("DATA_DIR") or os.path.join(BASE_DIR, "data")
+DB_PATH = os.path.join(DATA_DIR, "toyotyo.db")
 
 HISTORY_PAGE_LIMIT = 100  # 画面に返す履歴の最大件数
 

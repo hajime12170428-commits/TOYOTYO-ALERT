@@ -3,7 +3,7 @@ import threading
 import time
 
 import monitor as monitor_mod
-from monitor import MonitorManager, TrainMonitor, match_trains, save_csv
+from monitor import MonitorManager, TrainMonitor, match_trains
 
 LINE = {
     "id": "Tozai",
@@ -57,25 +57,6 @@ class TestMatchTrains:
         # API がフィールド欠落したデータを返しても落ちない
         trains = [{}, {"number": "X"}, {"now": []}]
         assert match_trains(trains, "木場", "", "") == []
-
-
-# ----------------------
-# CSV保存(運用ログ)
-# ----------------------
-
-class TestCsv:
-
-    def test_save(self, tmp_path):
-        path = str(tmp_path / "history.csv")
-
-        save_csv("東西線", "木場", "西船橋", "A1234S", path=path)
-        save_csv("銀座線", "銀座", "浅草", "B1", path=path)
-
-        lines = (tmp_path / "history.csv").read_text(
-            encoding="utf-8-sig"
-        ).strip().splitlines()
-        assert len(lines) == 3  # ヘッダ + 2行
-        assert "A1234S" in lines[1]
 
 
 # ----------------------
@@ -135,7 +116,6 @@ def use_fake_api(monkeypatch, payloads):
     monkeypatch.setattr(monitor_mod, "ERROR_INTERVAL", 0.02)
     monkeypatch.setattr(monitor_mod, "CACHE_TTL", 0.0)  # キャッシュ無効化
     monkeypatch.setattr(monitor_mod, "_line_cache", {})
-    monkeypatch.setattr(monitor_mod, "save_csv", lambda *a, **k: None)
     return session
 
 

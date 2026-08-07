@@ -8,7 +8,6 @@
 #   増えてもAPIへのアクセスは路線あたり最大 1回/CACHE_TTL 秒に抑える
 # - 履歴の保存先(DB等)は on_notify コールバックで注入する
 
-import csv
 import logging
 import os
 import threading
@@ -30,10 +29,6 @@ CACHE_TTL = 1.5        # 路線APIキャッシュの有効期間(秒)
 MAX_MONITORS = int(os.environ.get("MAX_MONITORS", "50"))
 # 放置対策: 連続監視の上限(超えると自動終了して on_expire を呼ぶ)
 MAX_RUN_SECONDS = int(os.environ.get("MAX_MONITOR_HOURS", "12")) * 3600
-
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-HISTORY_CSV = os.path.join(BASE_DIR, "history.csv")
-CSV_HEADER = ["日時", "路線", "駅", "行先", "列番"]
 
 # 利用者ごとのアラーム状態辞書を守るロック(app.py と共有)
 state_lock = threading.Lock()
@@ -62,22 +57,6 @@ def fetch_line_data(session, api_id):
         _line_cache[api_id] = (time.time(), data)
 
     return data
-
-
-def save_csv(line_name, station, destination, train, path=None):
-    """通知1件を運用ログCSVに追記する(全利用者共通のサーバー側ログ)。"""
-    path = path or HISTORY_CSV
-    new_file = not os.path.exists(path)
-
-    try:
-        with open(path, "a", newline="", encoding="utf-8-sig") as f:
-            writer = csv.writer(f)
-            if new_file:
-                writer.writerow(CSV_HEADER)
-            writer.writerow([now_str(), line_name, station, destination, train])
-    except OSError as e:
-        # Excel で開いたままなどで書けないことがある
-        logger.error("履歴CSVの保存に失敗しました: %s", e)
 
 
 def match_trains(trains, station, destination, train_no):
@@ -258,8 +237,6 @@ class TrainMonitor:
                 on_notify(entry)
             except Exception:
                 logger.exception("履歴の保存に失敗")
-
-        save_csv(line["name"], station, destination, number)
 
 
 class MonitorManager:

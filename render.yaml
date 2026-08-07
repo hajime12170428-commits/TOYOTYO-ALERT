@@ -1,0 +1,29 @@
+# Render設定:Tokyo Metro Alert (TMA)
+#
+# 重要:監視状態はプロセス内メモリで持つため、worker は必ず 1 にすること。
+#      並行リクエストは threads で処理する。
+#
+# 永続ディスク(/data)を付けると履歴・監視状態が再デプロイ後も残る。
+# 無料プランはディスクが使えず、15分アクセスがないとスリープして監視が止まる。
+services:
+  - type: web
+    name: toyotyo-alert
+    runtime: python
+    plan: starter
+    region: singapore
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn --workers 1 --threads 8 --timeout 120 --bind 0.0.0.0:$PORT app:app
+    healthCheckPath: /api/health
+    disk:
+      name: tma-data
+      mountPath: /data
+      sizeGB: 1
+    envVars:
+      - key: DATA_DIR
+        value: /data
+      - key: PYTHONUTF8
+        value: "1"
+      - key: MAX_MONITORS
+        value: "50"
+      - key: MAX_MONITOR_HOURS
+        value: "12"

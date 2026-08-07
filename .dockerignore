@@ -1,0 +1,12 @@
+.git/
+.github/
+.venv/
+.claude/
+__pycache__/
+*.pyc
+.pytest_cache/
+tests/
+data/*.db*
+history.csv
+start.bat
+README.md
