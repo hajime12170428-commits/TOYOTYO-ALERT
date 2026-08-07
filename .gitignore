@@ -1,0 +1,7 @@
+__pycache__/
+*.pyc
+.venv/
+history.csv
+.pytest_cache/
+data/*.db*
+.claude/

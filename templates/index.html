@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TOYOTYO ALERT Ver0.8</title>
+    <title>Tokyo Metro Alert (TMA) Ver0.9</title>
 
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
@@ -13,63 +13,41 @@
 
 <div class="container">
 
-    <h1>🚇 TOYOTYO ALERT Ver0.8</h1>
+    <h1>🚇 Tokyo Metro Alert (TMA) Ver0.9</h1>
+    <p class="subtitle">東京メトロ全10路線対応</p>
+
+    {% if message %}
+    <div class="message {{ 'error' if error else 'success' }}">
+        {{ message }}
+    </div>
+    {% endif %}
 
     <form action="/start" method="post">
 
         <h2>監視設定</h2>
 
+        <label>路線</label>
+
+        <select name="line" id="lineSelect"></select>
+
         <label>駅</label>
 
-        <select name="station">
-
-            <option>中野</option>
-            <option>落合</option>
-            <option>高田馬場</option>
-            <option>早稲田</option>
-            <option>神楽坂</option>
-            <option>飯田橋</option>
-            <option>九段下</option>
-            <option>竹橋</option>
-            <option>大手町</option>
-            <option>日本橋</option>
-            <option>茅場町</option>
-            <option>門前仲町</option>
-            <option selected>木場</option>
-            <option>東陽町</option>
-            <option>南砂町</option>
-            <option>西葛西</option>
-            <option>葛西</option>
-            <option>浦安</option>
-            <option>南行徳</option>
-            <option>行徳</option>
-            <option>妙典</option>
-            <option>原木中山</option>
-            <option>西船橋</option>
-
-        </select>
+        <select name="station" id="stationSelect"></select>
 
         <label>行先</label>
 
-        <select name="destination">
-            <option>中野</option>
-            <option>三鷹</option>
-            <option>東陽町</option>
-            <option>西船橋</option>
-            <option>東葉勝田台</option>
-        </select>
+        <select name="destination" id="destinationSelect"></select>
 
-        <label>列番</label>
+        <label>列車一覧(クリックでその列車の監視を開始)</label>
 
-        <input
-            type="text"
-            name="train"
-            placeholder="例：A1234S">
+        <div id="trainList" class="trainList">読み込み中...</div>
 
-        <br><br>
+        <input type="hidden" name="train" id="trainInput" value="">
+
+        <br>
 
         <button type="submit">
-            ▶ 監視開始
+            ▶ 監視開始(全列車)
         </button>
 
         <button
@@ -106,6 +84,34 @@
 
     </div>
 
+    <h3>監視条件</h3>
+
+    <table>
+
+        <tr>
+            <th>路線</th>
+            <td id="cfgLine">-</td>
+        </tr>
+
+        <tr>
+            <th>駅</th>
+            <td id="cfgStation">-</td>
+        </tr>
+
+        <tr>
+            <th>行先</th>
+            <td id="cfgDestination">-</td>
+        </tr>
+
+        <tr>
+            <th>列番</th>
+            <td id="cfgTrain">-</td>
+        </tr>
+
+    </table>
+
+    <h3>検知状況</h3>
+
     <table>
 
         <tr>
@@ -114,30 +120,31 @@
         </tr>
 
         <tr>
-            <th>駅</th>
-            <td id="monitorStation">-</td>
+            <th>最終確認</th>
+            <td id="lastCheck">-</td>
         </tr>
 
         <tr>
-            <th>行先</th>
-            <td id="monitorDestination">-</td>
+            <th>最終検知列車</th>
+            <td id="lastTrain">-</td>
         </tr>
 
         <tr>
-            <th>列番</th>
-            <td id="monitorTrain">-</td>
-        </tr>
-
-        <tr>
-            <th>最終検知</th>
+            <th>最終検知時刻</th>
             <td id="lastDetect">-</td>
         </tr>
 
     </table>
 
+    <h3>🚆 監視対象列車の現在位置(リアルタイム) <small>(到着時間は駅数からの目安)</small></h3>
+
+    <div id="trackingArea" class="trackingArea">
+        監視を開始すると表示されます
+    </div>
+
     <hr>
 
-        <h2>📊 統計</h2>
+    <h2>📊 統計</h2>
 
     <table>
 
@@ -164,6 +171,7 @@
             <tr>
 
                 <th>時間</th>
+                <th>路線</th>
                 <th>駅</th>
                 <th>行先</th>
                 <th>列番</th>
@@ -181,12 +189,20 @@
 </div>
 
 
+<!-- 音声アンロック案内(クリックで音が有効になると消える) -->
+<div id="audioNotice" class="audioNotice">
+    🔇 ブラウザの制限により、画面を一度クリック(タップ)するまでアラーム音は鳴りません
+</div>
+
+
 <!-- アラーム画面 -->
 <div id="alarmScreen" class="alarmScreen">
 
     <div class="alarmBox">
 
         <h1>🚨 接近検知 🚨</h1>
+
+        <h2 id="lineText"></h2>
 
         <h2 id="stationText"></h2>
 
@@ -219,4 +235,4 @@
 
 </body>
 
-</html> 何行目とか場所も正確に教えて
+</html>

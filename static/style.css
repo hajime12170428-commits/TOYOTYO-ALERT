@@ -19,6 +19,277 @@ h1{
     color:#1565c0;
 }
 
+.subtitle{
+    text-align:center;
+    color:#607d8b;
+    margin-top:-10px;
+}
+
+.message{
+    padding:14px;
+    border-radius:8px;
+    margin:15px 0;
+    font-weight:bold;
+    text-align:center;
+}
+
+.message.success{
+    background:#e8f5e9;
+    color:#2e7d32;
+    border:1px solid #a5d6a7;
+}
+
+.message.error{
+    background:#ffebee;
+    color:#c62828;
+    border:1px solid #ef9a9a;
+}
+
+.statusIndicator{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    font-size:20px;
+    font-weight:bold;
+}
+
+h3{
+    margin:20px 0 0;
+    color:#455a64;
+}
+
+.lineDot{
+    display:inline-block;
+    width:12px;
+    height:12px;
+    border-radius:50%;
+    margin-right:8px;
+    vertical-align:middle;
+}
+
+.trainList{
+    display:grid;
+    grid-template-columns:repeat(auto-fill, minmax(240px, 1fr));
+    gap:10px;
+    margin-top:8px;
+    color:#607d8b;
+}
+
+.trainList button.trainItem{
+    width:100%;
+    margin:0;
+    padding:10px 14px;
+    font-size:15px;
+    background:#e3f2fd;
+    border:1px solid #90caf9;
+    border-radius:8px;
+    text-align:left;
+    display:flex;
+    flex-direction:column;
+    gap:4px;
+}
+
+.trainList button.trainItem:hover{
+    background:#bbdefb;
+}
+
+.trainItem .trainNumber{
+    font-weight:bold;
+    font-size:18px;
+    color:#0d47a1;
+}
+
+.trainItem .trainMeta{
+    font-size:13px;
+    color:#455a64;
+}
+
+.trackingArea{
+    margin-top:8px;
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+    color:#607d8b;
+}
+
+/* ---- 路線図 ---- */
+
+.routeMap{
+    background:#fafafa;
+    border:1px solid #cfd8dc;
+    border-radius:8px;
+    padding:12px 14px;
+}
+
+.routeHeader{
+    font-weight:bold;
+    color:#37474f;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    flex-wrap:wrap;
+    gap:6px;
+    margin-bottom:8px;
+}
+
+.routeDirection{
+    color:#1565c0;
+    font-size:14px;
+}
+
+.routeScroll{
+    overflow-x:auto;
+    padding:4px 0;
+}
+
+.routeLine{
+    display:flex;
+    align-items:flex-start;
+    min-width:max-content;
+    padding:0 4px;
+}
+
+.routeStation{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    width:36px;
+    flex:none;
+}
+
+.routeStation .marker,
+.routeSeg{
+    height:22px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+}
+
+.routeStation .dot{
+    width:14px;
+    height:14px;
+    border-radius:50%;
+    background:#eceff1;
+    border:2px solid #90a4ae;
+    box-sizing:border-box;
+}
+
+/* 通過済み(緑)・これから到着(青) */
+.routeStation.passed .dot{
+    background:#66bb6a;
+    border-color:#388e3c;
+}
+
+.routeStation.upcoming .dot{
+    background:#42a5f5;
+    border-color:#1976d2;
+}
+
+/* 監視対象駅の強調 */
+.routeStation.target .dot,
+.routeStation.target .trainIcon{
+    box-shadow:0 0 0 4px rgba(255,143,0,.55);
+    border-radius:50%;
+}
+
+.routeStation.target .name{
+    color:#e65100;
+    font-weight:bold;
+}
+
+.routeStation .name{
+    margin-top:4px;
+    font-size:10px;
+    line-height:1.15;
+    color:#455a64;
+    writing-mode:vertical-rl;
+    text-orientation:upright;
+}
+
+/* 駅間の線 */
+.routeSeg{
+    flex:none;
+    width:24px;
+    position:relative;
+}
+
+.routeSeg::before{
+    content:"";
+    height:4px;
+    width:100%;
+    background:#cfd8dc;
+}
+
+.routeSeg.passed::before{
+    background:#66bb6a;
+}
+
+.trainIcon{
+    font-size:17px;
+    line-height:1;
+}
+
+.routeSeg .trainIcon{
+    position:absolute;
+    left:50%;
+    top:50%;
+    transform:translate(-50%, -55%);
+}
+
+.routeInfo{
+    margin-top:6px;
+    font-size:14px;
+    color:#455a64;
+}
+
+.routeArrival{
+    margin-top:2px;
+    font-weight:bold;
+    color:#2e7d32;
+}
+
+.audioNotice{
+    position:fixed;
+    bottom:0;
+    left:0;
+    width:100%;
+    box-sizing:border-box;
+    background:#ff8f00;
+    color:#fff;
+    text-align:center;
+    padding:12px;
+    font-weight:bold;
+    z-index:9998;
+}
+
+.lamp{
+    width:18px;
+    height:18px;
+    border-radius:50%;
+    background:#9e9e9e;
+}
+
+.lamp.offline{
+    background:#9e9e9e;
+}
+
+.lamp.online{
+    background:#00c853;
+    box-shadow:0 0 8px #00c853;
+}
+
+.lamp.alarm{
+    background:#d50000;
+    box-shadow:0 0 8px #d50000;
+    animation:blink .5s infinite;
+}
+
+@keyframes blink{
+    50%{
+        opacity:.3;
+    }
+}
+
 h2{
     margin-top:25px;
 }
