@@ -1,0 +1,13 @@
+# 実行時に生まれるもの（版管理に入れない）
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+*.db
+history.csv
+
+# 秘密の値
+.env
+
+# Web Pushの鍵（このパソコンの中だけ。Gitに入れない）
+.vapid_keys.txt

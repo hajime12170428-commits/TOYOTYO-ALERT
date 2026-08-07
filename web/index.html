@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0b1120">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="メトロ通知">
+<title>TOYOCHO ALERT</title>
+<link rel="manifest" href="/manifest.json">
+<link rel="apple-touch-icon" href="/static/icon-192.png">
+<link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+
+<header class="app-header">
+  <h1>メトロ通知</h1>
+  <span id="conn" class="conn" title="通知の受信状態">●</span>
+</header>
+
+<main>
+  <!-- 見張り一覧 -->
+  <section id="view-watch" class="view active">
+    <div id="watch-empty" class="empty">
+      <p>まだ見張りがありません。</p>
+      <button class="primary" onclick="showView('add')">見張りを追加する</button>
+    </div>
+    <ul id="watch-list" class="cards"></ul>
+  </section>
+
+  <!-- 追加 -->
+  <section id="view-add" class="view">
+    <form id="add-form" class="form">
+      <label>路線
+        <select id="f-line" required></select>
+      </label>
+      <label>駅
+        <select id="f-station" required></select>
+      </label>
+      <label>方面（指定しないと両方向）
+        <select id="f-direction"><option value="">すべて</option></select>
+      </label>
+      <label>行先（指定しないとすべて）
+        <input id="f-destination" type="text" placeholder="例：西船橋" list="dest-list">
+        <datalist id="dest-list"></datalist>
+      </label>
+      <label>知らせるタイミング
+        <select id="f-notify">
+          <option value="approaching,arrived">できるだけ早く（接近時）</option>
+          <option value="arrived">駅に着いたとき</option>
+        </select>
+      </label>
+      <button class="primary" type="submit">この条件で見張る</button>
+      <p id="add-error" class="error" hidden></p>
+    </form>
+  </section>
+
+  <!-- 履歴 -->
+  <section id="view-history" class="view">
+    <ul id="history-list" class="cards"></ul>
+    <p id="history-empty" class="empty">まだ通知はありません。</p>
+  </section>
+</main>
+
+<nav class="tabbar">
+  <button data-view="watch" class="tab active">見張り</button>
+  <button data-view="add" class="tab">追加</button>
+  <button data-view="history" class="tab">履歴</button>
+</nav>
+
+<!-- 通知が来たときの全画面表示 -->
+<div id="alarm" class="alarm" hidden>
+  <div class="alarm-kind" id="alarm-kind">まもなく到着</div>
+  <div class="alarm-station" id="alarm-station">—</div>
+  <div class="alarm-detail" id="alarm-detail"></div>
+  <button id="alarm-stop" class="alarm-stop">止める</button>
+</div>
+
+<!-- 初回の許可（音とOS通知は、利用者の操作がないと有効にできない） -->
+<div id="setup" class="setup" hidden>
+  <div class="setup-box">
+    <h2>通知の準備</h2>
+    <p>電車が近づいたときに、音とお知らせでお伝えします。</p>
+    <button id="setup-ok" class="primary">音とお知らせを許可する</button>
+    <button id="setup-skip" class="ghost">あとで</button>
+  </div>
+</div>
+
+<script src="/static/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,3 @@
+-r requirements.txt
+pytest>=8.0
+pillow>=10.0   # アイコン生成に使用（一度作れば不要）

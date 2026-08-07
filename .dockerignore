@@ -1,0 +1,13 @@
+.venv/
+.git/
+__pycache__/
+*.pyc
+*.db
+tests/
+docs/
+history.csv
+# Ver1（旧版）は載せない
+app.py
+monitor.py
+static/
+templates/

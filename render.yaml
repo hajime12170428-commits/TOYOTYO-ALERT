@@ -1,0 +1,34 @@
+# Render設定：TOYOCHO ALERT Ver2（β版）。
+#
+# 使い方：RenderのダッシュボードでNew →「Blueprint」→ このリポジトリを選ぶと、
+# このファイルの内容どおりにサービスが作られる。
+#
+# 注意：
+# - プランはStarter（有料・約7ドル/月）。無料プランは15分でスリープするため
+#   列車の巡回が止まり、通知が届かなくなる。またディスクが使えず設定が消える。
+# - 地域はシンガポール（Renderに東京はない。日本から一番近い置き場所）。
+services:
+  - type: web
+    name: toyocho-alert
+    runtime: docker
+    plan: starter
+    region: singapore
+    healthCheckPath: /api/health
+    disk:
+      name: toyocho-data
+      mountPath: /data
+      sizeGB: 1
+    envVars:
+      - key: DATABASE_URL
+        value: sqlite:////data/toyocho.db
+      - key: COOKIE_SECURE
+        value: "true"
+      - key: PYTHONUTF8
+        value: "1"
+      # Web Pushの鍵。値はダッシュボードで入力する（このファイルには書かない）
+      - key: VAPID_PRIVATE_KEY
+        sync: false
+      - key: VAPID_PUBLIC_KEY
+        sync: false
+      - key: VAPID_SUBJECT
+        value: mailto:hajime12170428@gmail.com
