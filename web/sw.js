@@ -5,7 +5,9 @@
  * 2. 画面を閉じている間に届いたお知らせを表示する
  */
 
-const CACHE = "toyocho-v2";
+// 番号を上げると、利用者の端末に残っている古い保存が自動で捨てられる。
+// 画面のファイルを直したときは必ず上げること（上げないと古い画面が出続ける）。
+const CACHE = "toyocho-v3";
 const SHELL = [
   "/",
   "/static/style.css",
@@ -35,6 +37,22 @@ self.addEventListener("fetch", (event) => {
   if (url.pathname.startsWith("/api/")) return;
   if (event.request.method !== "GET") return;
 
+  // 画面本体（ページの読み込み）は「まずサーバー、だめなら保存」。
+  // 逆にすると、画面を直しても利用者に古い画面が出続けてしまうため。
+  if (event.request.mode === "navigate") {
+    event.respondWith(
+      fetch(event.request)
+        .then((res) => {
+          const copy = res.clone();
+          caches.open(CACHE).then((c) => c.put(event.request, copy)).catch(() => {});
+          return res;
+        })
+        .catch(() => caches.match(event.request))
+    );
+    return;
+  }
+
+  // 部品（CSS・JS・音・アイコン）は「まず保存、なければサーバー」（表示を速くするため）
   event.respondWith(
     caches.match(event.request).then(
       (hit) =>

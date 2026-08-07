@@ -17,6 +17,11 @@
 
 * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
+/* 「hidden」印が付いた部品は、何があっても表示しない。
+   この行がないと、下の `.alarm { display: flex }` などの表示指定が
+   hidden印より強くなり、アラーム画面が常に出てしまう（実際に起きた不具合）。 */
+[hidden] { display: none !important; }
+
 body {
   margin: 0;
   background: var(--bg);
